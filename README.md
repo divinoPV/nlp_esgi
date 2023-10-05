@@ -33,6 +33,14 @@ Les "tasks":
 - "is_name": prédit si le mot est un nom de personne
 - "find_comic_name": si la video est une chronique comique, sort le nom du comique
 
+## Dataset
+
+Dans (lien à définir), on a un CSV avec 3 colonnes:
+- video_name: le nom de la video
+- is_comic: est-ce une chronique humoristique
+- is_name: une liste de taille (nombre de mots dans video_name) valant 1 si le mot est le nom d'une personne, 0 sinon
+- comic: le nom du comique si c'est une chronique humoristique
+
 ## Partie 1: Text classification: prédire si la vidéo est une chronique comique
 
 ### Librairies
