@@ -38,7 +38,44 @@ Les "tasks":
 ### Librairies
 
 - sklearn.feature_extraction.text: Regarder les features disponibles. Lesquelles semblent adaptées ?
-- nltk: télécharger le corpus français. La librairie permettra de retirer les stopwords et de stemmer les mots
+- NLTK: télécharger le corpus français. La librairie permettra de retirer les stopwords et de stemmer les mots
+
+### Tasks
+
+- Adapter "src/" pour que la pipeline "evaluate" marche sur la task "is_comic_video", avec un modèle constant (fournissant la baseline)
+- Expérimenter les différentes features & modèles qui paraissaient adapter
+- Ecrire le rapport (dans report/td1.{your choice}) avec:
+   - Les a-priori que vous aviez sur les features & modèles utiles ou non
+   - Quels ont été les apports individuels de chacune de ces variation ?
+   - Conclusion sur le bon modeling (en l'état)
+- Adapter "src/" pour que les pipelines "train" et "predict" marchent
+
+## Partie 2: Named-entity recognition: Reconnaître les noms de personne dans le texte
+
+### Tasks
+
+- Adapter "src/" pour que la pipeline "evaluate" marche sur la task "is_name", avec un modèle constant (fournissant la baseline)
+- Comment definir les features pour un mot ?
+    - Est-ce que ce sont les mots avant ? après ?
+    - Comment traite-t-on la ponctuation ?
+    - On peut définir des features "is_final_word", "is_starting_word", "is_capitalized"
+    - On peut aussi définir des balises pour repérer les choses importantes. Par exemple, je peux transformer "L'humeur de Marina Rollman" en "<START> <MAJ> l'humeur de <MAJ> marina <MAJ>rollman <END>" en utilisant les balises <START> pour identifier le début d'une phrase, <END> fin d'une phrase, <MAJ> si la première lettre est en majuscule
+    - (optionel) pour cette tâche, un "pos_tagger" (part-of-speech tagger: détermine, pour chaque mot, sa classe: nom, verbe, adjectif, etc). NLTK n'en fournit pas en français, mais on peut utiliser le POS tagger de Standford https://nlp.stanford.edu/software/tagger.shtml#About
+- Ecrire le rapport (dans report/td1.{your choice}) avec:
+   - Les a-priori que vous aviez sur les features & modèles utiles ou non
+   - Quels ont été les apports individuels de chacune de ces variation ?
+   - Conclusion sur le bon modeling (en l'état)
+- Adapter "src/" pour que les pipelines "train" et "predict" marchent
+
+## Partie 3: Assembler les modèles
+
+- Adapter "src/" pour que la pipeline "evaluate" marche sur la task "find_comic_name", avec un modèle constant (fournissant la baseline)
+- Assembler les 2 modèles précédents. Quelle performance ?
+- Essayer une autre façon de résoudre le problème. Par exemple, un modèle named-entity recognition donne les noms qu'il a trouvé. Pour chaque nom, on associe la liste des videos où il apparaît. On entraîne un autre prédicteur "liste videos où nom apparaît" -> est-ce le nom d'un comique
+- Adapter "src/" pour que les pipelines "train" et "predict" marchent
+- Terminer le rapport
+
+
 
 
 
