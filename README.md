@@ -12,5 +12,6 @@ Dans ce TD, on s'intéresse surtout à la démarche. Pour chaque tâche:
 - Garder une trace écrite des expérimentations dans un rapport. Dans le rapport, on s'intéresse plus au sens du travail effectué (quelles expérimentations ont été faites, pourquoi, quelles conclusions) qu'à la liste de chiffres.
 - Avoir une codebase clean, permettant de reproduire les expérimentations.
 
-
+La codebase doit fournir les entry points suivant:
+```python src/main.py train --input_file=data/raw/train.csv --model_dump=models/model.json```
 
