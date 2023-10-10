@@ -35,7 +35,7 @@ Les "tasks":
 
 ## Dataset
 
-Dans (lien à définir), on a un CSV avec 3 colonnes:
+Dans [ce lien](https://docs.google.com/spreadsheets/d/1x6MITsoffSq7Hs3mDIe1YLVvpvUdcsdUBnfWYgieH7A/edit?usp=sharing), on a un CSV avec 3 colonnes:
 - video_name: le nom de la video
 - is_comic: est-ce une chronique humoristique
 - is_name: une liste de taille (nombre de mots dans video_name) valant 1 si le mot est le nom d'une personne, 0 sinon
