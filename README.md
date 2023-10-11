@@ -83,6 +83,18 @@ Dans [ce lien](https://docs.google.com/spreadsheets/d/1x6MITsoffSq7Hs3mDIe1YLVvp
 - Adapter "src/" pour que les pipelines "train" et "predict" marchent
 - Terminer le rapport
 
+# Troubleshooting
+
+Quelques problèmes rencontrés et leur solution
+
+## ImportError "No module name src"
+
+Python n'a pas src dans son path
+Solution 1:
+Dans le root folder (avant src/)
+```
+conda develop .
+```
 
 
 
