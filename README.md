@@ -89,12 +89,20 @@ Quelques problèmes rencontrés et leur solution
 
 ## ImportError "No module name src"
 
-Python n'a pas src dans son path
+Python n'a pas src dans son path.
+Pour l'instant, on n'a pas trouvé de solution  qui marche dans tous les cas.
+
 Solution 1:
 Dans le root folder (avant src/)
 ```
 conda develop .
 ```
+
+Solution 2: change "from src.data..." to "from data..."
+(Dans le "pythonpath" (là où python va chercher le code), il est normal de regarder "src/")
+
+Solution 3: PyCharm
+Definir le dossier root "nlp_esgi" comme source de code (clic droit sur le dossier, "set as source root")
 
 
 
