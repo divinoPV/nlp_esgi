@@ -10,7 +10,7 @@ def cli():
 
 
 @click.command()
-@click.option("--task", help="Can be is_comic, is_name or find_comic_name")
+@click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
 @click.option("--input_filename", default="data/raw/train.csv", help="File training data")
 @click.option("--model_dump_filename", default="models/dump.json", help="File to dump model")
 def train(task, input_filename, model_dump_filename):
@@ -24,7 +24,7 @@ def train(task, input_filename, model_dump_filename):
 
 
 @click.command()
-@click.option("--task", help="Can be is_comic, is_name or find_comic_name")
+@click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
 @click.option("--input_filename", default="data/raw/train.csv", help="File training data")
 @click.option("--model_dump_filename", default="models/dump.json", help="File to dump model")
 @click.option("--output_filename", default="data/processed/prediction.csv", help="Output file for predictions")
@@ -33,7 +33,7 @@ def test(task, input_filename, model_dump_filename, output_filename):
 
 
 @click.command()
-@click.option("--task", help="Can be is_comic, is_name or find_comic_name")
+@click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
 @click.option("--input_filename", default="data/raw/train.csv", help="File training data")
 def evaluate(task, input_filename):
     pass
