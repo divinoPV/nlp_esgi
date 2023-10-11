@@ -43,15 +43,14 @@ Dans [ce lien](https://docs.google.com/spreadsheets/d/1x6MITsoffSq7Hs3mDIe1YLVvp
 
 ## Partie 1: Text classification: prédire si la vidéo est une chronique comique
 
-### Librairies
-
-- sklearn.feature_extraction.text: Regarder les features disponibles. Lesquelles semblent adaptées ?
-- NLTK: télécharger le corpus français. La librairie permettra de retirer les stopwords et de stemmer les mots
-
 ### Tasks
 
-- Adapter "src/" pour que la pipeline "evaluate" marche sur la task "is_comic_video", avec un modèle constant (fournissant la baseline)
-- Expérimenter les différentes features & modèles qui paraissaient adapter
+- Adapter "src/" pour que la pipeline "python src/main.py evaluate" marche sur la task "is_comic_video", avec un modèle constant (fournissant la baseline)
+- Modifier "make_features" pour qu'il fasse une feature basique décrivant les noms de videos (par exemple, en utilisant sklearn.feature_extraction.text.CountVectorizer sans se soucier du paramétrage idéal). La pipeline devrait marcher.
+- Modifier le modèle de DumbModel à un modèle normal (linear model, logistic regression, random forest). Ces changements devraient être faciles.
+- Essayed d'optimiser en ajoutant / optimisant les features faites dans "make_features":
+    - Regarder les features disponibles dans sklearn.feature_extraction.text. Lesquelles semblent adaptées ?
+    - Regarder NLTK. télécharger le corpus français. La librairie permettra de retirer les stopwords et de stemmer les mots
 - Ecrire le rapport (dans report/td1.{your choice}) avec:
    - Les a-priori que vous aviez sur les features & modèles utiles ou non
    - Quels ont été les apports individuels de chacune de ces variation ?
