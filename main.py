@@ -20,7 +20,7 @@ def train(task, input_filename, model_dump_filename):
     model = DumbModel()
     model.fit(X, y)
 
-    return model.dump(model_dump_filename)
+    return model.dump(model_dump_filename, X)
 
 
 @click.command()
@@ -35,8 +35,14 @@ def test(task, input_filename, model_dump_filename, output_filename):
 @click.command()
 @click.option("--task", help="Can be is_comic, is_name or find_comic_name")
 @click.option("--input_filename", default="data/raw/train.csv", help="File training data")
-def evaluate(task, input_filename):
-    pass
+def evaluate(task: str, input_filename: str):
+    if str == type(task) and "is_comic_video" == task:
+        df = make_dataset(input_filename)
+        X, _ = make_features(df)
+        print(X, _)
+        model = DumbModel()
+
+        click.echo(model.predict(X))
 
 
 cli.add_command(train)
