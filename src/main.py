@@ -19,7 +19,7 @@ def train(task, input_filename, model_dump_filename):
     df = make_dataset(input_filename)
     X, y = make_features(df)
 
-    model = DumbModel()
+    model = make_model()
     model.fit(X, y)
 
     return model.dump(model_dump_filename)
