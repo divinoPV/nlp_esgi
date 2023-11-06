@@ -3,10 +3,8 @@ import joblib
 import numpy as np
 import warnings
 
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem import SnowballStemmer
 from pandas import DataFrame
+from sklearn.metrics import f1_score
 from sklearn.model_selection import cross_val_score
 
 from src.data.make_dataset import make_dataset
@@ -16,9 +14,9 @@ from src.features.make_features import make_features
 from src.model.main import make_model
 
 
-# Ignorer les avertissements relatifs à is_sparse
+# Ignorer les avertissements
 warnings.filterwarnings("ignore", category=FutureWarning, module="xgboost.data")
-stemmer = SnowballStemmer("french")
+warnings.filterwarnings("ignore", category=UserWarning, message="The least populated class in y has only 1 members, which is less than n_splits=5.")
 
 
 @click.group()
@@ -47,7 +45,8 @@ def train(
 
     model = make_model(
         feature_extraction=FeatureExtractionEnum[feature_extraction.strip()],
-        model=ModelEnum[model_type.strip()]
+        model=ModelEnum[model_type.strip()],
+        task=task,
     )
     model.fit(X, y)
 
@@ -58,7 +57,7 @@ def train(
 
 @click.command()
 @click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
-@click.option("--input_filename", default="data/raw/train.csv", help="File training data")
+@click.option("--input_filename", default="data/raw/test.csv", help="File training data")
 @click.option("--model_dump_filename", default="models/dump.json", help="File to dump model")
 @click.option("--output_filename", default="data/processed/prediction.csv", help="Output file for predictions")
 def predict(
@@ -84,7 +83,7 @@ def predict(
 @click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
 @click.option("--input_filename", default="data/raw/train.csv", help="File training data")
 @click.option("--feature_extraction", default="COUNT_VECTORIZER", help="Type of feature extraction")
-@click.option("--model_type", default="LINEAR_REGRESSION", help="Type of model")
+@click.option("--model_type", default="LOGISTIC_REGRESSION", help="Type of model")
 def evaluate(
     task: str,
     input_filename: str,
@@ -100,31 +99,17 @@ def evaluate(
     model = make_model(
         feature_extraction=FeatureExtractionEnum[feature_extraction.strip()],
         model=ModelEnum[model_type.strip()],
+        task=task,
     )
 
     # Scikit learn has function for cross validation
-    scores = cross_val_score(model, X, y, scoring="accuracy")
+    accuracy_scores = cross_val_score(model, X, y, scoring="accuracy")
+    f1_scores = cross_val_score(model, X, y, scoring="f1_macro")
 
-    print(f"Got accuracy {100 * np.mean(scores)}%")
+    print(f"Mean accuracy: {100 * np.mean(accuracy_scores)}%")
+    print(f"Mean F1 Score: {100 * np.mean(f1_scores)}%")
 
-    return scores
-
-
-def preprocess_text(text):
-    # Tokenization du texte
-    words = word_tokenize(text, language='french')
-    
-    # Retirer les stopwords
-    french_stopwords = set(stopwords.words('french'))
-    filtered_words = [word for word in words if word.lower() not in french_stopwords]
-    
-    # Stemming des mots
-    stemmed_words = [stemmer.stem(word) for word in filtered_words]
-    
-    # Rejoindre les mots en une seule chaîne
-    processed_text = ' '.join(stemmed_words)
-    
-    return processed_text
+    return accuracy_scores, f1_scores
 
 
 cli.add_command(train)
