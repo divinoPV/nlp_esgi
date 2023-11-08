@@ -1,4 +1,4 @@
-# NLP TD
+# NLP TD 1
 
 L'objectif de ce TD est de créer un modèle "nom de vidéo" -> "nom du comique" si c'est la chronique d'un comique, None sinon. On formulera le problème en 2 tâches d'apprentissage:
 - une de text classification pour savoir si la vidéo est une chronique comique
@@ -101,3 +101,16 @@ Solution 2: change "from src.data..." to "from data..."
 
 Solution 3: PyCharm
 Definir le dossier root "nlp_esgi" comme source de code (clic droit sur le dossier, "set as source root")
+
+# NLP TD 2:
+
+Dans ce TD, nous allons créer et optimiser un réseau de neurones récurrents (RNN) avec PyTorch dans la partie 1
+Dans la partie 2, nous allons utiliser ce RNN pour une tâche de named-entity recognition
+Ensuite, vous devrez utiliser le modèle de named-entity recognition à notre problème de reconnaissance de nom de comiques dans les videos youtube (la partie 2, named-entity recognition)
+
+Evaluation:
+- Rapport sur les itérations pour le RNN pour named-entity recognition
+- Test du nouveau modèle "Named-entity recognition" sur le jeu de données test des videos youtube.
+
+
+
