@@ -111,6 +111,3 @@ Ensuite, vous devrez utiliser le modèle de named-entity recognition à notre pr
 Evaluation:
 - Rapport sur les itérations pour le RNN pour named-entity recognition
 - Test du nouveau modèle "Named-entity recognition" sur le jeu de données test des videos youtube.
-
-
-

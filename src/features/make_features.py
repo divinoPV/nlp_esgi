@@ -1,4 +1,6 @@
-import nltk
+from ast import literal_eval
+
+# import nltk
 
 from imblearn.over_sampling import RandomOverSampler
 from nltk.corpus import stopwords
@@ -7,11 +9,12 @@ from nltk.stem.snowball import FrenchStemmer
 
 
 # download nltk ressources
-nltk.download('punkt')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('stopwords')
 
 stemmer = FrenchStemmer("french")
 stopwords = list(stopwords.words('french'))
+
 
 def preprocess_text(text):
     # Tokenization du texte + Retirer les stopwords
@@ -19,24 +22,51 @@ def preprocess_text(text):
 
 
 def extract_features_is_name(df):
-    X, y = [], []
+    sentence_end_punctuations = ['.', '!', '?', ';', '."', '!"', '?"', ';"']
+    df['is_name'] = df['is_name'].apply(literal_eval)
+    df['tokens'] = df['tokens'].apply(literal_eval)
+    exploded_data = df.explode(['tokens', 'is_name']).reset_index(drop=True)
 
-    for _, row in df.iterrows():
-        video_name_words = row['video_name'].split()
-        for i, (word, label) in enumerate(zip(video_name_words, row['is_name'])):
+    # init columns
+    exploded_data["is_final_word"]: bool = False
+    exploded_data["is_starting_word"]: bool = False
+    exploded_data["is_capitalized"]: bool = False
+    exploded_data["previous_word"]: str = ""
+    exploded_data["following_word"]: str = ""
 
-            word_features = {
-                'is_starting_word': i == 0,
-                'is_final_word': i == len(video_name_words) - 1,
-                'is_capitalized': word.istitle(),
-                'prev_word': video_name_words[i - 1] if i > 0 else '',
-                'next_word': video_name_words[i + 1] if i < len(video_name_words) - 1 else '',
-            }
+    for i in range(len(exploded_data)):
+        token: str = exploded_data.at[i, "tokens"]
+        is_new_sentence: bool = (exploded_data.at[i - 1, "tokens"] in sentence_end_punctuations) if i != 0 else False
 
-            X.append(word_features)
-            y.append(label)
+        if i == 0 or is_new_sentence:
+            exploded_data.at[i, "is_starting_word"] = True
 
-    return X, y
+        if i != 0 and (token in sentence_end_punctuations or is_new_sentence):
+            exploded_data.at[i - 1, "is_final_word"] = True
+        if i == len(exploded_data) - 1:
+            exploded_data.at[i, "is_final_word"] = True
+
+        if token not in sentence_end_punctuations and token and token[0].isupper():
+            exploded_data.at[i, "is_capitalized"] = True
+
+        if i != 0 and not exploded_data.at[i, "is_starting_word"]:
+            exploded_data.at[i, "previous_word"] = exploded_data.at[i - 1, "tokens"]
+
+        if token not in sentence_end_punctuations and i != len(exploded_data) - 1:
+            exploded_data.at[i, "following_word"] = exploded_data.at[i + 1, "tokens"]
+
+    return (
+        exploded_data[
+            [
+                "is_final_word",
+                "is_starting_word",
+                "is_capitalized",
+                "previous_word",
+                "following_word",
+            ]
+        ],
+        exploded_data["is_name"].astype(int)
+    )
 
 
 def extract_features_find_comic_name(df):

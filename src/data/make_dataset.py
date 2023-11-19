@@ -1,5 +1,5 @@
-import pandas as pd
+from pandas import read_csv
 
 
 def make_dataset(filename):
-    return pd.read_csv(filename, encoding='utf8', delimiter=';')
+    return read_csv(filename, encoding='utf8', delimiter=';')

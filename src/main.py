@@ -4,19 +4,22 @@ import numpy as np
 import warnings
 
 from pandas import DataFrame
-from sklearn.metrics import f1_score
+from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.model_selection import cross_val_score
 
-from src.data.make_dataset import make_dataset
-from src.enum.feature_extraction import FeatureExtractionEnum
-from src.enum.model import ModelEnum
-from src.features.make_features import make_features
-from src.model.main import make_model
+from data.make_dataset import make_dataset
+from custom_enum.feature_extraction import FeatureExtractionEnum
+from custom_enum.model import ModelEnum
+from features.make_features import make_features
+from model.main import make_model
 
 
 # Ignorer les avertissements
 warnings.filterwarnings("ignore", category=FutureWarning, module="xgboost.data")
 warnings.filterwarnings("ignore", category=UserWarning, message="The least populated class in y has only 1 members, which is less than n_splits=5.")
+
+model_dump_path = "models/dump.json"
+predictions_path = "data/processed/prediction.csv"
 
 
 @click.group()
@@ -48,6 +51,7 @@ def train(
         model=ModelEnum[model_type.strip()],
         task=task,
     )
+
     model.fit(X, y)
 
     joblib.dump(model, model_dump_filename)
@@ -55,22 +59,31 @@ def train(
     print(f"Model saved to {model_dump_filename}")
 
 
+def predict_func(
+    task: str,
+    input_filename: str,
+    model_dump_filename: str,
+):
+    df = make_dataset(input_filename)
+    X, _ = make_features(df, task)  # You only need X for prediction
+    model = joblib.load(model_dump_filename)
+    predictions = model.predict(X)
+
+    return predictions
+
+
 @click.command()
 @click.option("--task", help="Can be is_comic_video, is_name or find_comic_name")
 @click.option("--input_filename", default="data/raw/test.csv", help="File training data")
-@click.option("--model_dump_filename", default="models/dump.json", help="File to dump model")
-@click.option("--output_filename", default="data/processed/prediction.csv", help="Output file for predictions")
+@click.option("--model_dump_filename", default=model_dump_path, help="File to dump model")
+@click.option("--output_filename", default=predictions_path, help="Output file for predictions")
 def predict(
     task: str,
     input_filename: str,
     model_dump_filename: str,
     output_filename: str,
 ):
-    df = make_dataset(input_filename)
-    X, _ = make_features(df, task)  # You only need X for prediction
-
-    model = joblib.load(model_dump_filename)
-    predictions = model.predict(X)
+    predictions = predict_func(task, input_filename, model_dump_filename)
 
     # Save predictions to a CSV
     output_df = DataFrame({'predictions': predictions})
@@ -102,14 +115,20 @@ def evaluate(
         task=task,
     )
 
-    # Scikit learn has function for cross validation
+    predictions = predict_func(task, input_filename, model_dump_path)
+
+    # metrics
     accuracy_scores = cross_val_score(model, X, y, scoring="accuracy")
-    f1_scores = cross_val_score(model, X, y, scoring="f1_macro")
+    f1_scores = f1_score(y, predictions, average="macro")
+    precision = precision_score(y, predictions, average="macro")
+    recall = recall_score(y, predictions, average="macro")
 
     print(f"Mean accuracy: {100 * np.mean(accuracy_scores)}%")
     print(f"Mean F1 Score: {100 * np.mean(f1_scores)}%")
+    print(f"Mean Precision: {100 * np.mean(precision)}%")
+    print(f"Mean Recall: {100 * np.mean(recall)}%")
 
-    return accuracy_scores, f1_scores
+    return accuracy_scores, f1_scores, precision, recall
 
 
 cli.add_command(train)
